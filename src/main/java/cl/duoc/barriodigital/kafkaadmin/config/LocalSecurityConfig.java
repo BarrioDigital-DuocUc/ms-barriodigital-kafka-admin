@@ -1,15 +1,16 @@
-
 package cl.duoc.barriodigital.kafkaadmin.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Sin auth propia: el BFF aplica JWT + rol Admin.
+ * Activo en todos los perfiles (local/prod/demo).
+ */
 @Configuration
-@Profile("local")
 public class LocalSecurityConfig {
 
     @Bean
@@ -20,7 +21,9 @@ public class LocalSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/v1/kafka-admin/**"
+                                "/api/v1/kafka-admin/**",
+                                "/actuator/health",
+                                "/actuator/info"
                         ).permitAll()
                         .anyRequest().denyAll()
                 );
